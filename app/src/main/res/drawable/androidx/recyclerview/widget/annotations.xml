@@ -1,0 +1,7 @@
+<root>
+    <item name='androidx.recyclerview.widget.RecyclerView.Adapter Adapter()'>
+        <annotation name='org.jetbrains.annotations.Contract'>
+            <val name="pure" val="true" />
+        </annotation>
+    </item>
+</root>

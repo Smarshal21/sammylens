@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "972701420305",
+    "project_id": "sammy-lens",
+    "storage_bucket": "sammy-lens.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972701420305:android:b7dcb86a8594ccacd3dab0",
+        "android_client_info": {
+          "package_name": "com.smartherd.googlelens"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972701420305-gia0or03qlec2vluu6qpsn8f22fofih7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpf4MNJB53XsuijwB0G6hVjkjjMoRlW_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "972701420305-gia0or03qlec2vluu6qpsn8f22fofih7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
