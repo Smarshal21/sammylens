@@ -17,14 +17,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler
+//import com.google.firebase.ml.vision.FirebaseVision
+//import com.google.firebase.ml.vision.common.FirebaseVisionImage
+//import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class MainActivity(val firebaseVisionImageLabeler: String) : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
     lateinit var imageView: ImageView
     lateinit var snapbutton:Button
     private lateinit var resultsbutton:Button
@@ -46,23 +51,27 @@ class MainActivity(val firebaseVisionImageLabeler: String) : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         imageView = findViewById(R.id.image)
         snapbutton = findViewById(R.id.idnSnapbutton)
-        resultsbutton = findViewById(R.id.idnresultsbutton)
-        recyclerView = findViewById(R.id.idsearchresults)
-        loadingPB = findViewById(R.id.idpbloading)
-        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayoutManager.HORIZONTAL,false)
-
+       resultsbutton = findViewById(R.id.idnresultsbutton)
+       recyclerView = findViewById(R.id.idsearchresults)
+       loadingPB = findViewById(R.id.idpbloading)
+        recyclerView.layoutManager =
+            LinearLayoutManager(this@MainActivity,LinearLayoutManager.HORIZONTAL,false)
         searchRvModelArrayList =  ArrayList()
-        recyclerView.adapter = searchRvAdapter
-        searchRvAdapter = object :SearchRvAdapter(this@MainActivity,searchRvModelArrayList)
 
-        resultsbutton.setOnClickListener {
-            searchRvModelArrayList.clear()
-            searchRvAdapter.notifyDataSetChanged()
-            getResults()
-            loadingPB.visibility = (View.VISIBLE)
-        }
+       searchRvAdapter = SearchRvAdapter(this@MainActivity,searchRvModelArrayList)
+        recyclerView.adapter = searchRvAdapter
+
+        resultsbutton.setOnClickListener (object:View.OnClickListener{
+            override fun onClick(p0: View?) {
+                searchRvModelArrayList.clear()
+                searchRvAdapter.notifyDataSetChanged()
+                getResults()
+                loadingPB.visibility = (View.VISIBLE)
+            }
+        })
         snapbutton.setOnClickListener(object :View.OnClickListener{
             override fun onClick(v: View?) {
                 searchRvModelArrayList.clear()
@@ -71,18 +80,7 @@ class MainActivity(val firebaseVisionImageLabeler: String) : AppCompatActivity()
             }
         })
     }
-fun getResults() {
-    val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(imagebitmap)
-    val labeler: FirebaseVisionImageLabeler = FirebaseVision.getInstance().onDeviceImageLabeler
-    labeler.processImage(image).addOnSuccessListener {
-        val searchquery = firebaseVisionImageLabeler.get(0).toString()
-        getSearchResults(searchquery)
-    }.addOnFailureListener {
-        Toast.makeText(this@MainActivity,"Fail to detect image",Toast.LENGTH_SHORT).show()
 
-    }
-
-}
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -94,6 +92,21 @@ fun getResults() {
             }
             imageView.setImageBitmap(imagebitmap)
         }
+    }
+    fun getResults() {
+        val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(imagebitmap)
+        val labeler: FirebaseVisionImageLabeler = FirebaseVision.getInstance().onDeviceImageLabeler
+        labeler.processImage(image).addOnSuccessListener(object :OnSuccessListener<List<FirebaseVisionImageLabel>>{
+            override fun onSuccess(p0: List<FirebaseVisionImageLabel>) {
+                val searchquery = p0.get(0).text
+                getSearchResults(searchquery)
+            }
+
+        }).addOnFailureListener {
+            Toast.makeText(this@MainActivity,"Fail to detect image",Toast.LENGTH_SHORT).show()
+
+        }
+
     }
     @SuppressLint("NotifyDataSetChanged")
     private fun getSearchResults(searchquery: String) {
